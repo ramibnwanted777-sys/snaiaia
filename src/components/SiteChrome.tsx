@@ -19,7 +19,6 @@ import { Link, useLocation } from "react-router";
 
 const NAV = [
   { to: "/search", label: "البحث عن حرفي" },
-  { to: "/#pricing", label: "الباقات" },
   { to: "/join", label: "انضم كحرفي" },
   { to: "/terms", label: "القوانين والبنود" },
 ];
@@ -113,9 +112,9 @@ export function SiteHeader() {
                 size="sm"
                 className="h-9 px-2.5 sm:px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
               >
-                <Link to="/login" className="flex items-center gap-1.5">
+                <Link to="/login?role=customer" className="flex items-center gap-1.5">
                   <LogIn className="size-3.5" />
-                  <span>دخول</span>
+                  <span>دخول الزبون</span>
                 </Link>
               </Button>
 
@@ -125,9 +124,9 @@ export function SiteHeader() {
                 size="sm"
                 className="h-9 px-3 sm:px-3.5 text-xs font-medium gap-1.5"
               >
-                <Link to="/join">
+                <Link to="/login?role=artisan">
                   <UserPlus className="size-3.5" />
-                  <span className="hidden xs:inline">سجّل كحرفي</span>
+                  <span className="hidden xs:inline">دخول الحرفي</span>
                   <span className="xs:hidden">حرفي</span>
                 </Link>
               </Button>
@@ -217,8 +216,8 @@ export function SiteFooter() {
           <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground">
             قوانين وبنود الاستخدام
           </Link>
-          <Link to="/#pricing" className="text-sm text-muted-foreground hover:text-foreground">
-            باقات الاشتراك
+          <Link to="/join" className="text-sm text-muted-foreground hover:text-foreground">
+            انضمام الحرفيين والاشتراك
           </Link>
           <Link to="/admin" className="text-sm text-muted-foreground hover:text-foreground">
             بوابة الإدارة

@@ -1,28 +1,21 @@
 import { ArtisanCard } from "@/components/ArtisanCard";
 import {
-  CopyRow,
   Field,
   Kicker,
   NativeSelect,
-  PremiumBadge,
   SectionHeading,
 } from "@/components/kit";
 import { MobileTabBar, SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import {
-  CCP_INFO,
-  PAYMENT_NOTE,
-  PLANS,
   SPECIALTIES,
   WILAYA_NAMES,
 } from "@/convex/data";
 import { useAuth } from "@/hooks/use-auth";
-import { formatDZD, formatNumber } from "@/lib/format";
+import { formatNumber } from "@/lib/format";
 import { useQuery } from "convex/react";
 import {
-  BadgeCheck,
-  Check,
   Frame,
   Hammer,
   LayoutGrid,
@@ -114,11 +107,12 @@ export default function Landing() {
             مرحباً بك في <span className="font-medium text-foreground">دليل الصنايعية</span> — أوّل دليل حرفيين في الجزائر. ابحث مجاناً واتّصل مباشرة.
           </p>
           {!isLoading && !isAuthenticated && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link
                 to="/login?role=customer"
-                className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
               >
+                <LogIn className="size-3" />
                 دخول الزبون
               </Link>
               <Link
@@ -170,17 +164,26 @@ export default function Landing() {
                     ابحث عن حرفي
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="gap-2">
-                  <Link to="/join">
-                    <UserPlus className="size-4" />
-                    سجّل كحرفي
-                  </Link>
-                </Button>
-                {!isAuthenticated && (
+                {!isAuthenticated ? (
+                  <>
+                    <Button asChild size="lg" variant="secondary" className="gap-2">
+                      <Link to="/login?role=customer">
+                        <LogIn className="size-4" />
+                        دخول الزبون
+                      </Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="gap-2">
+                      <Link to="/join">
+                        <UserPlus className="size-4" />
+                        سجّل كحرفي
+                      </Link>
+                    </Button>
+                  </>
+                ) : (
                   <Button asChild size="lg" variant="outline" className="gap-2">
-                    <Link to="/login">
-                      <LogIn className="size-4" />
-                      تسجيل الدخول
+                    <Link to="/join">
+                      <UserPlus className="size-4" />
+                      سجّل كحرفي
                     </Link>
                   </Button>
                 )}
@@ -354,110 +357,13 @@ export default function Landing() {
               <div className="rounded-lg border border-dashed px-6 py-12 text-center">
                 <p className="text-sm font-medium">لا يوجد حرفيون منشورون بعد</p>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  كن أول حرفي في دليلك — التسجيل مجاني والاشتراك يبدأ من 1000 دج شهرياً.
+                  كن أول حرفي معتمد في دليلك — سجّل ملفك الآن لتصلك طلبات الزبائن مباشرة.
                 </p>
                 <Button asChild className="mt-5">
                   <Link to="/join">سجّل ملفك الآن</Link>
                 </Button>
               </div>
             )}
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* الباقات والدفع                                                      */}
-      {/* ------------------------------------------------------------------ */}
-      <section id="pricing" className="scroll-mt-20 border-b border-border bg-secondary/40">
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 md:px-8 md:py-20">
-          <SectionHeading
-            kicker="باقات الاشتراك"
-            title="ظهورك في الدليل بسعر واضح وصريح"
-            description="الاشتراك للحرفيين فقط. الدفع بالتحويل البريدي CCP، ويُفعَّل الحساب بعد تأكيد الإدارة للوصل."
-          />
-
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
-            {PLANS.map((plan) => (
-              <div
-                key={plan.id}
-                className={
-                  plan.premium
-                    ? "flex flex-col rounded-lg border border-foreground/25 bg-background p-6 md:p-7"
-                    : "flex flex-col rounded-lg border border-border bg-background p-6 md:p-7"
-                }
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-sm font-medium">{plan.name}</h3>
-                  {plan.badge ? <PremiumBadge compact /> : null}
-                </div>
-
-                <div className="mt-6 flex items-end gap-2">
-                  <span className="num text-3xl font-semibold">{formatDZD(plan.priceDZD)}</span>
-                  <span className="pb-1 text-xs text-muted-foreground">
-                    / {plan.periodLabel}
-                  </span>
-                </div>
-                {plan.originalPriceDZD && (
-                  <p className="num mt-1 text-xs text-muted-foreground line-through">
-                    {formatDZD(plan.originalPriceDZD)}
-                  </p>
-                )}
-
-                <p className="mt-4 text-xs leading-6 text-muted-foreground">{plan.tagline}</p>
-
-                <ul className="mt-6 flex flex-1 flex-col gap-3 border-t border-border pt-6">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5 text-xs leading-6">
-                      <Check className="mt-1 size-3.5 shrink-0 text-muted-foreground" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  asChild
-                  variant={plan.premium ? "default" : "outline"}
-                  className="mt-7 w-full"
-                >
-                  <Link to="/join">اختر {plan.name}</Link>
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 grid gap-6 rounded-lg border border-border bg-background p-6 md:grid-cols-[1.1fr_0.9fr] md:p-8">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-foreground/25" />
-                <Kicker>الدفع عبر التحويل البريدي CCP</Kicker>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold">معلومات الحساب البريدية</h3>
-              <div className="mt-4">
-                <CopyRow label="اسم المستفيد" value={CCP_INFO.beneficiary} mono={false} />
-                <CopyRow label="رقم الحساب CCP" value={CCP_INFO.accountNumber} />
-                <CopyRow label="المفتاح (clé)" value={CCP_INFO.key} />
-                <CopyRow label="رقم RIP" value={CCP_INFO.rip} />
-                <CopyRow label="الوكالة" value={CCP_INFO.agency} mono={false} />
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-medium">خطوات التحويل</h3>
-              <ol className="mt-4 flex flex-col gap-4">
-                {CCP_INFO.steps.map((step, index) => (
-                  <li key={step} className="flex gap-3">
-                    <span className="num mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border border-border text-[11px] text-muted-foreground">
-                      {index + 1}
-                    </span>
-                    <span className="text-xs leading-6 text-muted-foreground">{step}</span>
-                  </li>
-                ))}
-              </ol>
-              <div className="mt-6 flex items-start gap-3 rounded-md bg-secondary/70 p-4">
-                <BadgeCheck className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                <p className="text-[11px] leading-6 text-muted-foreground">{PAYMENT_NOTE}</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -519,7 +425,7 @@ export default function Landing() {
 
           <p className="mt-8 flex items-center gap-2 text-[11px] text-muted-foreground">
             <MapPin className="size-3.5" />
-            58 ولاية · 8 تخصصات · دفع بالتحويل البريدي CCP
+            58 ولاية · 8 تخصصات · تواصل مباشر بين الزبائن والحرفيين
           </p>
 
           {/* قسم تحميل التطبيق */}

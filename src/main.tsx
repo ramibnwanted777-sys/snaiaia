@@ -100,13 +100,37 @@ function getConvexUrl(): string {
 const convex = new ConvexReactClient(getConvexUrl());
 
 function MissingEnvBanner() {
+  const [dismissed, setDismissed] = React.useState(() => {
+    try {
+      return sessionStorage.getItem("dismissed_env_banner") === "true";
+    } catch {
+      return false;
+    }
+  });
+
   const raw = import.meta.env.VITE_CONVEX_URL;
   const isConfigured = typeof raw === "string" && (raw.startsWith("http://") || raw.startsWith("https://"));
-  if (isConfigured) return null;
+  if (isConfigured || dismissed) return null;
 
   return (
-    <aside className="sticky top-0 z-50 border-b border-amber-500/30 bg-amber-500/15 px-4 py-2 text-center text-xs font-medium text-amber-900 dark:text-amber-200">
-      ⚠️ لم يتم ضبط رابط قاعدة البيانات <code className="rounded bg-amber-500/20 px-1.5 py-0.5">VITE_CONVEX_URL</code> في إعدادات Vercel أو ملف <code className="rounded bg-amber-500/20 px-1.5 py-0.5">.env.local</code> بعد. أضف الرابط لربط التطبيق بقاعدة بياناتك.
+    <aside className="sticky top-0 z-50 flex items-center justify-between border-b border-amber-500/30 bg-amber-500/15 px-4 py-2 text-xs font-medium text-amber-900 dark:text-amber-200">
+      <div className="flex-1 text-center">
+        ⚠️ تنبيه: لم يتم ضبط رابط قاعدة البيانات <code className="rounded bg-amber-500/20 px-1.5 py-0.5">VITE_CONVEX_URL</code> في إعدادات Vercel أو ملف <code className="rounded bg-amber-500/20 px-1.5 py-0.5">.env.local</code> بعد.
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          setDismissed(true);
+          try {
+            sessionStorage.setItem("dismissed_env_banner", "true");
+          } catch {}
+        }}
+        className="ms-3 rounded px-2 py-0.5 font-bold hover:bg-amber-500/20 transition-colors"
+        aria-label="إغلاق التنبيه"
+        title="إغلاق التنبيه"
+      >
+        ✕
+      </button>
     </aside>
   );
 }
