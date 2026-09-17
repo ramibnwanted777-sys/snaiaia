@@ -88,7 +88,28 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
+function getConvexUrl(): string {
+  const raw = import.meta.env.VITE_CONVEX_URL;
+  if (typeof raw === "string" && (raw.startsWith("http://") || raw.startsWith("https://"))) {
+    return raw.trim();
+  }
+  // Safe absolute URL fallback to prevent "Provided address was not an absolute URL" crash
+  return "https://placeholder.convex.cloud";
+}
+
+const convex = new ConvexReactClient(getConvexUrl());
+
+function MissingEnvBanner() {
+  const raw = import.meta.env.VITE_CONVEX_URL;
+  const isConfigured = typeof raw === "string" && (raw.startsWith("http://") || raw.startsWith("https://"));
+  if (isConfigured) return null;
+
+  return (
+    <aside className="sticky top-0 z-50 border-b border-amber-500/30 bg-amber-500/15 px-4 py-2 text-center text-xs font-medium text-amber-900 dark:text-amber-200">
+      ⚠️ لم يتم ضبط رابط قاعدة البيانات <code className="rounded bg-amber-500/20 px-1.5 py-0.5">VITE_CONVEX_URL</code> في إعدادات Vercel أو ملف <code className="rounded bg-amber-500/20 px-1.5 py-0.5">.env.local</code> بعد. أضف الرابط لربط التطبيق بقاعدة بياناتك.
+    </aside>
+  );
+}
 
 // تسجيل Service Worker لدعم PWA وعمل التطبيق بدون إنترنت
 if ("serviceWorker" in navigator) {
@@ -96,8 +117,6 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch(() => {});
   });
 }
-
-
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -130,11 +149,11 @@ function RouteSyncer() {
   return null;
 }
 
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RootErrorBoundary>
       <ConvexAuthProvider client={convex}>
+        <MissingEnvBanner />
         <BrowserRouter>
           <RouteSyncer />
           <ScrollToTop />
