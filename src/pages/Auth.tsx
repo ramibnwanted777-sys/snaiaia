@@ -23,7 +23,7 @@ import {
   UserX,
   Wrench,
 } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
 
 export type AccountRole = "customer" | "artisan";
