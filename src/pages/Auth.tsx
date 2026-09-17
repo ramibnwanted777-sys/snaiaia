@@ -82,6 +82,12 @@ function Auth({ redirectAfterAuth, initialRole = "customer" }: AuthProps) {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authTimedOut, setAuthTimedOut] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setAuthTimedOut(true), 2500);
+    return () => clearTimeout(t);
+  }, []);
 
   const fallback =
     roleFromUrl || artisanFromReturnTo
@@ -104,7 +110,7 @@ function Auth({ redirectAfterAuth, initialRole = "customer" }: AuthProps) {
   }
 
   // أثناء التحقق لا نعرض استمارة الدخول أبداً (تجنّب ظهورها لمن هو مسجّل)
-  if (authLoading) {
+  if (authLoading && !authTimedOut) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="size-5 animate-spin text-muted-foreground" />

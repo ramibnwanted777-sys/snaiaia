@@ -436,6 +436,14 @@ export default function Admin() {
   const { token, setToken } = useAdminSession();
   const session = useQuery(api.admin.session, token ? { token } : "skip");
   const [expired, setExpired] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimedOut(true);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (token && session && !session.valid) {
@@ -445,6 +453,30 @@ export default function Admin() {
   }, [token, session, setToken]);
 
   if (status === undefined) {
+    if (timedOut) {
+      return (
+        <PageShell width="narrow">
+          <div className="rounded-lg border border-border bg-background p-7 text-center">
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+              <ShieldAlert className="size-6" />
+            </div>
+            <h2 className="mt-4 text-lg font-semibold">بوابة الإدارة بانتظار ربط قاعدة البيانات</h2>
+            <p className="mt-2 text-xs leading-6 text-muted-foreground">
+              لوحة التحكم تتصل مباشرة بقاعدة البيانات Convex. يرجى تفعيل مشروع Convex وربط الرابط في إعدادات Vercel (<code className="font-mono bg-secondary px-1.5 py-0.5 rounded">VITE_CONVEX_URL</code>).
+            </p>
+            <div className="mt-6 flex justify-center gap-3">
+              <Button asChild variant="outline">
+                <Link to="/">العودة للرئيسية</Link>
+              </Button>
+              <Button onClick={() => window.location.reload()} variant="default">
+                إعادة المحاولة
+              </Button>
+            </div>
+          </div>
+        </PageShell>
+      );
+    }
+
     return (
       <PageShell width="narrow">
         <LoadingBlock label="جارٍ التحقق من حالة لوحة التحكم…" />
