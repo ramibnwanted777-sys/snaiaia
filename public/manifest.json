@@ -1,0 +1,21 @@
+{
+  "name": "دليل الصنايعية",
+  "short_name": "الصنايعية",
+  "description": "دليل حرفيين جزائري — ابحث عن حرفي في حيّك واتصل به مباشرة",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#171717",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["business", "utilities"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
