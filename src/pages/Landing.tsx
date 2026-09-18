@@ -99,43 +99,6 @@ export default function Landing() {
       <SiteHeader />
 
       {/* ------------------------------------------------------------------ */}
-      {/* رسالة ترحيب                                                        */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="border-b border-border bg-secondary/40">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-3 md:px-8">
-          <p className="text-xs text-muted-foreground">
-            مرحباً بك في <span className="font-medium text-foreground">دليل الصنايعية</span> — أوّل دليل حرفيين في الجزائر. ابحث مجاناً واتّصل مباشرة.
-          </p>
-          {!isLoading && !isAuthenticated && (
-            <div className="flex items-center gap-3">
-              <Link
-                to="/login?role=customer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                <LogIn className="size-3" />
-                دخول الزبون
-              </Link>
-              <Link
-                to="/login?role=artisan"
-                className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-85"
-              >
-                <UserPlus className="size-3" />
-                دخول الحرفي
-              </Link>
-            </div>
-          )}
-          {!isLoading && isAuthenticated && (
-            <Link
-              to={accountHome}
-              className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-1.5 text-xs font-medium text-background transition-opacity hover:opacity-85"
-            >
-              حسابي
-            </Link>
-          )}
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
       {/* الواجهة الرئيسية                                                    */}
       {/* ------------------------------------------------------------------ */}
       <section className="border-b border-border">
