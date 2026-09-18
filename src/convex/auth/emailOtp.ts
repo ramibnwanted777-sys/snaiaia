@@ -16,13 +16,14 @@ export const emailOtp = Email({
     return generateRandomString(random, alphabet, 6);
   },
   async sendVerificationRequest({ identifier: email, token }) {
+    console.log(`[AUTH OTP CODE] رمز التحقق للبريد ${email} هو: ${token}`);
     try {
       await axios.post(
         "https://auth.freebuff.app/send_otp",
         {
           to: email,
           otp: token,
-          appName: process.env.VLY_APP_NAME || "a freebuff.com application",
+          appName: process.env.VLY_APP_NAME || "دليل الصنايعية",
         },
         {
           headers: {
@@ -30,8 +31,10 @@ export const emailOtp = Email({
           },
         },
       );
-    } catch (error) {
-      throw new Error(JSON.stringify(error));
+    } catch (error: any) {
+      console.warn("[AUTH OTP ERROR] تعذّر إرسال البريد عبر المزود:", error?.response?.data || error?.message || error);
+      console.info(`[AUTH OTP CODE BACKUP] يمكنك استخدام هذا الرمز للدخول: ${token}`);
+      throw new Error("تعذّر إرسال رمز التحقق إلى بريدك الإلكتروني. يمكنك فحص لوحة تحكم Convex لمعرفة الرمز أو المحاولة مجدداً.");
     }
   },
 });
