@@ -93,8 +93,7 @@ function getConvexUrl(): string {
   if (typeof raw === "string" && (raw.startsWith("http://") || raw.startsWith("https://"))) {
     return raw.trim();
   }
-  // Safe absolute URL fallback to prevent "Provided address was not an absolute URL" crash
-  return "https://placeholder.convex.cloud";
+  return "https://dutiful-chipmunk-373.eu-west-1.convex.cloud";
 }
 
 const convex = new ConvexReactClient(getConvexUrl());
